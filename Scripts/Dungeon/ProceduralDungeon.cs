@@ -29,6 +29,7 @@ namespace Generator.Dungeon
         [SerializeField] private float m_generationDelay;
 
         [Header("Result")]
+        [SerializeField] private int m_maxIterations = 5000;
         [SerializeField] private int m_iterations;
         [SerializeField] private int m_generatedRoomCount;
 
@@ -52,6 +53,7 @@ namespace Generator.Dungeon
         private TileBankManager m_tileBankManager;
         private DecorationBankManager m_decorationBankManager;
         private Bounds m_dungeonAreaBound;
+        private bool m_generatingEndVolumes;
 
         //Runtime
         private Room m_activeRoom;
@@ -75,6 +77,7 @@ namespace Generator.Dungeon
         private void Init()
         {
             //Initiate variables
+            m_generatingEndVolumes = false;
             m_iterations = 0;
             m_generatedRoomCount = 0;
             m_dungeonAreaBound.center = transform.position;
@@ -137,7 +140,20 @@ namespace Generator.Dungeon
             Debug.Log("Using seed :" + m_random.seed);
             DDebugTimer.Start();
 
-            TryGeneration();
+            try
+            {
+                TryGeneration();
+            }
+            catch (System.Exception ex)
+            {
+                // This will catch the exception thrown by AddIteration() or any other unexpected error.
+                Debug.LogError("An exception occurred during dungeon generation, and the process has been stopped. See the message below for details:");
+                Debug.LogException(ex, this); // This logs the exception with its full stack trace for easier debugging.
+
+                // Stop everything and clean up to prevent Unity from freezing
+                StopAllCoroutines();
+                Clear();
+            }
         }
 
         private void TryGeneration()
@@ -168,6 +184,7 @@ namespace Generator.Dungeon
 
         private void SetStartVolume()
         {
+            m_generatingEndVolumes = false;
             List<Volume> _spawnPool = m_volumeBankManager.GetVolumeOfType(VolumeType.Spawn);
 
             int _index = m_random.range(0, _spawnPool.Count - 1);
@@ -181,7 +198,7 @@ namespace Generator.Dungeon
             _newVolume.Voxels = VoxelGrid.TranslateVoxels(_newVolume.Voxels, transform.position);
             AddVolume(_newVolume);
 
-            m_iterations++;
+            AddIteration();
         }
 
         private void GenerateVolumes()
@@ -228,6 +245,7 @@ namespace Generator.Dungeon
 
         private void GenerateEndVolumes()
         {
+            m_generatingEndVolumes = true;
             List<VolumeHardLink> _availableLinks = new List<VolumeHardLink>(m_dicUnconnectedHardLinks.Values);
 
             foreach (VolumeHardLink _volumeLinks in _availableLinks)
@@ -316,6 +334,18 @@ namespace Generator.Dungeon
                         continue;
                     }
 
+                    if (!m_generatingEndVolumes && m_generatedRoomCount >= m_targetRoomNumber && m_requiredRooms.Count == 0)
+                    {
+                        return false; // Stop adding rooms if we've met our goal
+                    }
+                    else
+                    {
+                        if (m_generatingEndVolumes && m_generatedRoomCount == m_maxRoomNumber)
+                        {
+                            return false;
+                        }
+                    }
+
                     List<Vector3> _voxelsToTest = VoxelGrid.ConnectLink(_volumeToTest.Voxels, _linkToTest, _connectingLink);
                     if (_voxelsToTest != null && CheckVoxelOverlap(_voxelsToTest))
                     {
@@ -329,7 +359,7 @@ namespace Generator.Dungeon
                         }
                     }
 
-                    m_iterations++;
+                    AddIteration();
                 }
             }
 
@@ -387,7 +417,7 @@ namespace Generator.Dungeon
 
         IEnumerator GenerateEndVolumesCoroutine()
         {
-
+            m_generatingEndVolumes = true;
             List<VolumeHardLink> _availableLinks = new List<VolumeHardLink>(m_dicUnconnectedHardLinks.Values);
 
             foreach (VolumeHardLink _volumeLinks in _availableLinks)
@@ -525,7 +555,10 @@ namespace Generator.Dungeon
             m_volumsToWorkOn.Enqueue(_newVolume);
             m_generatedRoomCount++;
             if (m_generatedRoomCount > m_maxRoomNumber)
-                TryGeneration();
+            {
+                Debug.LogWarning($"Generation exceeded max room count ({m_maxRoomNumber}). Stopping generation and will attempt a restart.");
+                m_volumsToWorkOn.Clear(); // Empty the queue to stop the 'GenerateVolumes' while-loop.
+            }
         }
 
         private void AddNewVolumeUnconectedHardLinkToDic(Volume _newVolume)
@@ -593,6 +626,18 @@ namespace Generator.Dungeon
                 _navMeshSurface.size = m_dungeonAreaBound.size * 1.1f;
                 yield return new WaitForSeconds(m_generationDelay);
                 _navMeshSurface.BuildNavMesh();
+            }
+        }
+
+        private void AddIteration()
+        {
+            m_iterations++;
+            if (m_iterations > m_maxIterations)
+            {
+                string errorMessage = $"Generation HALTED: Maximum iterations ({m_maxIterations}) exceeded. " +
+                    "This commonly indicates an impossible generation constraint " +
+                    "(e.g., trying to place increase dungeon max size, allow more flexibility for min and max rooms.";
+                throw new System.InvalidOperationException(errorMessage);
             }
         }
 
