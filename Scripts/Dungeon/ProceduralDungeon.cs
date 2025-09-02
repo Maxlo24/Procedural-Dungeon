@@ -32,7 +32,7 @@ namespace Generator.Dungeon
         [SerializeField] private int m_maxIterations = 5000;
         [SerializeField] private int m_iterations;
         [SerializeField] private int m_generatedRoomCount;
-
+        [SerializeField] private float m_generationStage = 0;
 
         //List
         private List<Volume> m_volumes;
@@ -260,19 +260,14 @@ namespace Generator.Dungeon
 
             if (m_requiredRooms.Count > 0)
             {
-                float _generationStage = (float)m_generatedRoomCount / m_targetRoomNumber;
-
-                //Debug.Log(m_generatedRoomCount);
-                //Debug.Log(m_targetRoomNumber);
-
-                Debug.Log(_generationStage);
+                Debug.Log(m_generationStage);
 
                 List<Room> _unusedRoom = new List<Room>(m_requiredRooms);
 
                 foreach (Room _room in m_requiredRooms)
                 {
                     bool _roomPlaced = false;
-                    if (_room.GenerationStage < _generationStage)
+                    if (_room.GenerationStage < m_generationStage)
                     {
                         Volume _volume = _room.GetComponent<Volume>();
                         _roomPlaced = TryVolumePool(_connectingLink, new Queue<Volume>(new[] { _volume }));
@@ -554,6 +549,7 @@ namespace Generator.Dungeon
             m_volumes.Add(_newVolume);
             m_volumsToWorkOn.Enqueue(_newVolume);
             m_generatedRoomCount++;
+            m_generationStage = (float)m_generatedRoomCount / m_targetRoomNumber;
             if (m_generatedRoomCount > m_maxRoomNumber)
             {
                 Debug.LogWarning($"Generation exceeded max room count ({m_maxRoomNumber}). Stopping generation and will attempt a restart.");

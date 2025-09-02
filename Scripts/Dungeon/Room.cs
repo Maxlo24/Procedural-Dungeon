@@ -44,7 +44,7 @@ namespace Generator.Dungeon
     {
         [Range(0, 1)]
         [Tooltip("How deep the room sould be from the spawnpoint in the dungeon (Works only for required rooms)")]
-        [SerializeField] private float m_generationStage; // How deep it sould be in the dungeon
+        [SerializeField] private float m_generationStage;
         [SerializeField] private RoomType m_possibleRoomType = RoomType.All;
         [SerializeField] private bool m_generateTilesRuntime = true;
         [SerializeField] private List<TileSpawner> m_linkTileSpawners = new List<TileSpawner>();
