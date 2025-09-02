@@ -292,6 +292,79 @@ namespace Generator.Dungeon
 
         }
 
+
+        /// <summary>
+        /// Tries to connect a single volume prefab to an existing link.
+        /// It iterates through the prefab's available links to find a valid placement.
+        /// </summary>
+        /// <returns>True if the volume was successfully placed, false otherwise.</returns>
+        private bool TryPlaceSingleVolume(Volume _volumeToTest, VolumeHardLink _connectingLink)
+        {
+            if (_volumeToTest == null)
+            {
+                Debug.LogWarning("TryPlaceSingleVolume: Encountered a NULL volume prefab. Skipping.");
+                return false;
+            }
+
+            Queue<VolumeHardLink> _linksToTry = GetShuffledAvailableLinksOfSameType(_volumeToTest, _connectingLink);
+            if (_linksToTry == null || _linksToTry.Count == 0)
+            {
+                return false; // No compatible links on this volume.
+            }
+
+            foreach (VolumeHardLink _linkToTest in _linksToTry)
+            {
+                if (CanPlaceVolumeAt(_linkToTest))
+                {
+                    List<Vector3> _voxelsToTest = VoxelGrid.ConnectLink(_volumeToTest.Voxels, _linkToTest, _connectingLink);
+
+                    if (_voxelsToTest != null && CheckVoxelOverlap(_voxelsToTest))
+                    {
+                        // Success! We found a valid placement.
+                        Volume _newVolume = InstantiateVolume(_volumeToTest, _linkToTest, _connectingLink, _voxelsToTest);
+                        if (_newVolume != null)
+                        {
+                            AddVolume(_newVolume);
+                            return true; // Exit immediately upon success
+                        }
+                    }
+                }
+            }
+
+            return false; // We tried all links on this volume and none worked.
+        }
+
+        /// <summary>
+        /// Checks if the generation process should continue adding more rooms.
+        /// </summary>
+        private bool CanPlaceVolumeAt(VolumeHardLink _linkToTest)
+        {
+            AddIteration();
+            if (_linkToTest == null)
+            {
+                Debug.LogWarning("CanPlaceVolumeAt: called with null link.");
+                return false;
+            }
+
+            // Check against room limits
+            if (!m_generatingEndVolumes && m_generatedRoomCount >= m_targetRoomNumber && m_requiredRooms.Count == 0)
+            {
+                return false; // Stop adding normal rooms if we've met our goal
+            }
+
+            if (m_generatingEndVolumes && m_generatedRoomCount >= m_maxRoomNumber)
+            {
+                return false; // Stop adding end caps if we are at the absolute max
+            }
+
+            return true; // It's okay to proceed with placement checks.
+        }
+
+
+        /// <summary>
+        /// Iterates through a queue of volume prefabs, attempting to place one that fits.
+        /// </summary>
+        /// <returns>True if a volume from the pool was successfully placed.</returns>
         private bool TryVolumePool(VolumeHardLink _connectingLink, Queue<Volume> _volumePool)
         {
             if (_connectingLink == null)
@@ -300,65 +373,17 @@ namespace Generator.Dungeon
                 return false;
             }
 
-            bool _success = false;
-            bool _volumeTestFinished = false;
-
-            while (!_volumeTestFinished && _volumePool.Count > 0)
+            foreach (Volume _volumeToTest in _volumePool)
             {
-                Volume _volumeToTest = _volumePool.Dequeue();
-                if (_volumeToTest == null)
+                // Try to place this volume. If it succeeds, our job is done.
+                if (TryPlaceSingleVolume(_volumeToTest, _connectingLink))
                 {
-                    Debug.LogWarning("TryVolumePool: Encountered a NULL volume prefab. Skipping.");
-                    continue;
-                }
-
-                Queue<VolumeHardLink> _linksPool = GetShuffledAvailableLinksOfSameType(_volumeToTest, _connectingLink);
-                if (_linksPool == null || _linksPool.Count == 0)
-                {
-                    // no valid links → skip to next volume
-                    continue;
-                }
-
-                bool _linkTestFinished = false;
-                while (!_linkTestFinished && _linksPool.Count > 0)
-                {
-                    VolumeHardLink _linkToTest = _linksPool.Dequeue();
-                    if (_linkToTest == null)
-                    {
-                        Debug.LogWarning($"TryVolumePool: Skipping null link on volume {_volumeToTest.name}");
-                        continue;
-                    }
-
-                    if (!m_generatingEndVolumes && m_generatedRoomCount >= m_targetRoomNumber && m_requiredRooms.Count == 0)
-                    {
-                        return false; // Stop adding rooms if we've met our goal
-                    }
-                    else
-                    {
-                        if (m_generatingEndVolumes && m_generatedRoomCount == m_maxRoomNumber)
-                        {
-                            return false;
-                        }
-                    }
-
-                    List<Vector3> _voxelsToTest = VoxelGrid.ConnectLink(_volumeToTest.Voxels, _linkToTest, _connectingLink);
-                    if (_voxelsToTest != null && CheckVoxelOverlap(_voxelsToTest))
-                    {
-                        Volume _newVolume = InstantiateVolume(_volumeToTest, _linkToTest, _connectingLink, _voxelsToTest);
-                        if (_newVolume != null)
-                        {
-                            AddVolume(_newVolume);
-                            _success = true;
-                            _linkTestFinished = true;
-                            _volumeTestFinished = true;
-                        }
-                    }
-
-                    AddIteration();
+                    return true; // Success! Exit the function.
                 }
             }
 
-            return _success;
+            // We went through the entire pool and couldn't place any of them.
+            return false;
         }
 
 
