@@ -1,6 +1,6 @@
 {
   "name": "maxpack.proceduraldungeon",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "MaxPack - Procedural Dungeon",
   "description": "This is a package to generate custom procedural dungeon.",
   "unity": "2022.3",
