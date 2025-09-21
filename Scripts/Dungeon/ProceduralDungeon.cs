@@ -669,12 +669,13 @@ namespace Generator.Dungeon
 
             //m_iterations = 0;
             m_generatedRoomCount = 0;
+            DestroyImmediate(SpawnedVolumeContainer);
 
-            m_volumes.Clear();
-            m_usedVoxels.Clear();
-            m_dicUnconnectedHardLinks.Clear();
-            m_dicExposedSoftLinks.Clear();
-            m_volumsToWorkOn.Clear();
+            if (m_volumes != null) m_volumes.Clear();
+            if (m_usedVoxels != null) m_usedVoxels.Clear();
+            if (m_dicUnconnectedHardLinks != null) m_dicUnconnectedHardLinks.Clear();
+            if (m_dicExposedSoftLinks != null) m_dicExposedSoftLinks.Clear();
+            if (m_volumsToWorkOn != null) m_volumsToWorkOn.Clear();
 
             for (int i = 0; i < m_navMeshSurfaces.Count; ++i)
             {
@@ -682,7 +683,6 @@ namespace Generator.Dungeon
                 _navMeshSurface.RemoveData();
             }
 
-            DestroyImmediate(SpawnedVolumeContainer);
 
 #if UNITY_EDITOR
             SceneView.RepaintAll();
