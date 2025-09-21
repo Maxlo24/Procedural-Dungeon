@@ -12,7 +12,7 @@
         {
             "displayName": "Demo samples",
             "description": "Contains demo assets",
-            "path": "Samples~/Demo"
+            "path": "Samples/Demo"
         }
     ]
 }
