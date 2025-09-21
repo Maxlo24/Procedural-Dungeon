@@ -9,6 +9,11 @@
         "email": "max.gillot@cpe.fr"
     },
     "samples": [
+        //{
+        //    "displayName": "Demo samples",
+        //    "description": "Contains demo assets",
+        //    "path": "Samples~/Demo"
+        //},
         {
             "displayName": "Demo samples",
             "description": "Contains demo assets",
