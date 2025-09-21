@@ -1,0 +1,18 @@
+{
+    "name": "maxpack.proceduraldungeon",
+    "version": "1.0.1",
+    "displayName": "MaxPack - Procedural Dungeon",
+    "description": "This is a package to generate custom procedural dungeon. You can find demo her : https://github.com/Maxlo24/Procedural-Dungeon/releases/tag/v0.0.1-alpha",
+    "unity": "2022.3",
+    "author": {
+        "name": "Gillot Maxime",
+        "email": "max.gillot@cpe.fr"
+    },
+    "samples": [
+        {
+            "displayName": "Demo samples",
+            "description": "Contains demo assets",
+            "path": "Samples~/Demo"
+        }
+    ]
+}
