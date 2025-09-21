@@ -1,0 +1,17 @@
+{
+    "name": "maxpack.proceduraldungeon.runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8c4dd21966739024fbd72155091d199e",
+        "GUID:c221a3a15cbc3489c8a2162e994307a0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
