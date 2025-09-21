@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class DLogger  {
     public static void Log(string _msg, Object _class = null) {

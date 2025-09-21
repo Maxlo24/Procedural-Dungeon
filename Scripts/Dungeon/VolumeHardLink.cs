@@ -1,5 +1,4 @@
-﻿using Generator.Dungeon;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Generator.Dungeon
