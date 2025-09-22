@@ -9,7 +9,7 @@
         "email": "max.gillot@cpe.fr"
     },
     "dependencies": {
-        "maxpack.defaultinputsystem": "https://github.com/Maxlo24/Unity-InputSystem.git"
+        "maxpack.defaultinputsystem": "1.0.0"
     },
     "samples": [
         {
