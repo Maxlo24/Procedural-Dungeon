@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1747dbfa186b2a447be547371bf98403, type: 3}
+  m_Name: DebugDungeonAssetSO
+  m_EditorClassIdentifier: 
+  roomPreset: {fileID: 11400000, guid: 841a2815c529c4d729d80add7ee9657d, type: 2}
+  decorationPresets:
+  - {fileID: 11400000, guid: 138a8e961a58647fe9109c23dfd2f2b4, type: 2}
+  tilesPresets:
+  - {fileID: 11400000, guid: 248708103fbfa487eb36986e0dce42c9, type: 2}
+  basicRoomFrequency: 10
+  hallRoomFrequency: 20
+  stairsRoomFrequency: 5
+  specialRoomFrequency: 5

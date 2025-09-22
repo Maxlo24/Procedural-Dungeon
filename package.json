@@ -12,12 +12,12 @@
         {
             "displayName": "Demo samples",
             "description": "Contains demo assets",
-            "path": "Samples~/Demo"
+            "path": "Demo~"
         },
         {
             "displayName": "Temp Demo samples",
             "description": "Contains demo assets",
-            "path": "Samples/Demo"
+            "path": "Demo"
         }
     ]
 }

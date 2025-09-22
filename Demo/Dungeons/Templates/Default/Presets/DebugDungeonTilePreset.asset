@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7a56ca530c6ca849a57b668e00b0987, type: 3}
+  m_Name: DebugDungeonTilePreset
+  m_EditorClassIdentifier: Assembly-CSharp::Generator.Dungeon.DungeonTileAssetSO
+  wallTiles:
+  - {fileID: 526909904088095773, guid: 9e5eae56e078a7449925e5e772105aad, type: 3}
+  - {fileID: 2034728969729066306, guid: 07148668be5324e429c03d8541450419, type: 3}
+  ceilingTiles:
+  - {fileID: 526909904088095773, guid: 662df879b906e01409f4d11ca63008a1, type: 3}
+  floorTiles:
+  - {fileID: 526909904088095773, guid: 7a34b05a7341dd046b18d5b21e0b3797, type: 3}
+  - {fileID: 526909904088095773, guid: ea9f436ebaa44be4b8ad4d6078d59e14, type: 3}
+  oppeningTiles:
+  - {fileID: 5871173801144493300, guid: 9fd01227d29494b43b536a70f03af7f7, type: 3}
+  doorTiles:
+  - {fileID: 7938045538005315176, guid: b8e4574a0ed1f354692db0ef31212ee0, type: 3}
