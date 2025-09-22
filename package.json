@@ -8,6 +8,9 @@
         "name": "Gillot Maxime",
         "email": "max.gillot@cpe.fr"
     },
+    "dependencies": {
+        "com.mycompany.mypackage": "https://github.com/Maxlo24/Unity-InputSystem.git"
+    },
     "samples": [
         {
             "displayName": "Demo samples",
